@@ -1,0 +1,17 @@
+# Build output
+bin/
+obj/
+
+# Data (downloaded from Azure, not committed)
+data/
+storage/
+
+# IDE
+.vs/
+.vscode/
+*.user
+*.suo
+
+# OS
+Thumbs.db
+.DS_Store

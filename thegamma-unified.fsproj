@@ -1,0 +1,43 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Giraffe" Version="6.*" />
+    <PackageReference Include="DotLiquid" Version="2.*" />
+    <PackageReference Include="FSharp.Data" Version="6.*" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.*" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="Common/Serializer.fs" />
+    <Compile Include="Common/JsonHelpers.fs" />
+    <Compile Include="Common/Facets.fs" />
+    <Compile Include="Services/Minimal/Routes.fs" />
+    <Compile Include="Services/Adventure/Routes.fs" />
+    <Compile Include="Expenditure/LoadData.fs" />
+    <Compile Include="Expenditure/Routes.fs" />
+    <Compile Include="Services/WorldBank/Domain.fs" />
+    <Compile Include="Services/WorldBank/Routes.fs" />
+    <Compile Include="Services/Olympics/Routes.fs" />
+    <Compile Include="Services/PivotData/Routes.fs" />
+    <Compile Include="Services/Smlouvy/Routes.fs" />
+    <Compile Include="CsvService/Pivot.fs" />
+    <Compile Include="CsvService/Storage.fs" />
+    <Compile Include="CsvService/WebScrape.fs" />
+    <Compile Include="CsvService/Listing.fs" />
+    <Compile Include="CsvService/Routes.fs" />
+    <Compile Include="SnippetService/SnippetAgent.fs" />
+    <Compile Include="SnippetService/Routes.fs" />
+    <Compile Include="Logging/LogAgent.fs" />
+    <Compile Include="Logging/Routes.fs" />
+    <Compile Include="Services/Pivot/Routes.fs" />
+    <Compile Include="Gallery/Filters.fs" />
+    <Compile Include="Gallery/GalleryLogic.fs" />
+    <Compile Include="Gallery/Routes.fs" />
+    <Compile Include="Program.fs" />
+  </ItemGroup>
+
+</Project>
