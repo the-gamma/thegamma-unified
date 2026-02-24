@@ -4,6 +4,7 @@ open System
 open System.IO
 open System.Collections.Generic
 open System.Text.RegularExpressions
+open Microsoft.FSharp.Reflection
 open Giraffe
 open Microsoft.AspNetCore.Http
 open DotLiquid
@@ -18,19 +19,52 @@ open TheGamma.SnippetService.SnippetAgent
 let mutable templateDir = ""
 let mutable baseUrl = ""
 
+type TemplateFileSystem(root:string) =
+  interface DotLiquid.FileSystems.IFileSystem with
+    member _.ReadTemplateFile(_context, templateName) =
+      let name = templateName.Trim('"')
+      let path = Path.Combine(root, name)
+      File.ReadAllText(path)
+
+/// Register F# record types (and their nested types) with DotLiquid
+/// so that template expressions like {{ model.title }} can access fields.
+/// Mirrors the logic from Suave.DotLiquid's tryRegisterTypeTree.
+let registerTypeTree =
+  let registered = Dictionary<Type, bool>()
+  let rec loop ty =
+    if not (registered.ContainsKey ty) then
+      registered.[ty] <- true
+      if FSharpType.IsRecord ty then
+        let fields = FSharpType.GetRecordFields ty
+        Template.RegisterSafeType(ty, [| for f in fields -> f.Name |])
+        for f in fields do loop f.PropertyType
+      elif ty.IsGenericType then
+        let t = ty.GetGenericTypeDefinition()
+        if t = typedefof<seq<_>> || t = typedefof<list<_>> then
+          loop (ty.GetGenericArguments().[0])
+        elif t = typedefof<option<_>> then
+          Template.RegisterSafeType(ty, [|"Value"|])
+          loop (ty.GetGenericArguments().[0])
+      elif ty.IsArray then
+        loop (ty.GetElementType())
+  loop
+
 let initGallery templDir bUrl recaptcha =
   templateDir <- templDir
   baseUrl <- bUrl
   recaptchaSecret <- recaptcha
   Template.NamingConvention <- NamingConventions.CSharpNamingConvention()
+  Template.FileSystem <- TemplateFileSystem(templDir)
   Template.RegisterFilter(typeof<Filters.FiltersType>)
   updateCurrentVersion()
 
 let renderTemplate (name:string) (model:obj) =
+  if not (isNull model) then registerTypeTree (model.GetType())
   let templatePath = Path.Combine(templateDir, name)
   let templateContent = File.ReadAllText(templatePath)
   let template = Template.Parse(templateContent)
-  let hash = Hash.FromAnonymousObject(model)
+  let hash = Hash()
+  hash.["model"] <- model
   template.Render(hash)
 
 let dotLiquidPage (name:string) (model:obj) : HttpHandler =
@@ -78,7 +112,7 @@ let insertSnippetHandler (form:Map<string,string>) : HttpHandler =
               twitter = twitter.TrimStart('@'); link = link; compiled = ""; code = source;
               hidden = false; config = defaultArg (form.TryFind "config") ""; version = version }
           let! id = snippetAgent.PostAndAsyncReply(fun ch -> InsertSnippet(newSnip, ch)) |> Async.StartAsTask
-          let url = sprintf "/gallery/%d/%s" id (cleanTitle title)
+          let url = sprintf "/%d/%s" id (cleanTitle title)
           return! redirectTo false url next ctx
       | _ ->
           let msg = "Some of the inputs for the snippet were not valid."
@@ -139,7 +173,7 @@ let createPageHandler : HttpHandler =
               let month = DateTime.UtcNow.ToString("MMMM yyyy", System.Globalization.CultureInfo.InvariantCulture)
               "", (model.VizSource.Replace("uploaded", sprintf "shared.'by date'.'%s'.'%s'" month csv.title))
           | _, _, NonEmpty uploadId, _ ->
-              sprintf """{ "providers": [ ["uploaded", "pivot", "%s/csv/providers/csv/%s"] ] }""" baseUrl uploadId,
+              sprintf """{ "providers": [ ["uploaded", "pivot", "%s/services/csv/providers/csv/%s"] ] }""" baseUrl uploadId,
               model.VizSource
           | _ -> "", model.VizSource
         let form =

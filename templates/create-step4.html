@@ -218,18 +218,18 @@
 
   var editor;
   require(["monaco", "https://thegamma.net/lib/thegamma-{{ model.CurrentVersion }}/thegamma.js"], function (_, g) {
-    var services = "/";
+    var services = "/services/";
     var graphServices = "https://thegamma-graph-service.azurewebsites.net/";
     var providers =
       g.providers.createProviders({
         "libraries": g.providers.library("https://thegamma.net/lib/thegamma-{{ model.CurrentVersion }}/libraries.json"),
         {% if model.UploadId != "" %}
-          "uploaded": g.providers.pivot("/csv/providers/csv/{{ model.UploadId }}"),
+          "uploaded": g.providers.pivot("/services/csv/providers/csv/{{ model.UploadId }}"),
         {% endif %}
         "worldbank": g.providers.rest(services + "worldbank"),
-        "shared": g.providers.rest("/csv/providers/listing"),
-        "web": g.providers.rest("/csv/providers/data"),
-        "expenditure": g.providers.rest("/expenditure"),
+        "shared": g.providers.rest("/services/csv/providers/listing"),
+        "web": g.providers.rest("/services/csv/providers/data"),
+        "expenditure": g.providers.rest("/services/expenditure"),
         "drWho": g.providers.rest(graphServices + "drWho"),
         "olympics": g.providers.pivot(services + "pdata/olympics") });
 

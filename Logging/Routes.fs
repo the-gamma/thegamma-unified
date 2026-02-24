@@ -8,7 +8,7 @@ open TheGamma.Logging.LogAgent
 let handler : HttpHandler =
   choose [
     GET >=> route "/" >=> text "Logging service is running..."
-    POST >=> routef "/log/%s" (fun name ->
+    POST >=> routef "/%s" (fun name ->
       fun next ctx -> task {
         let name = name.TrimEnd('/')
         if name |> Seq.exists (fun c -> c < 'a' || c > 'z') then

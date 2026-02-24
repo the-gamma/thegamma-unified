@@ -194,14 +194,14 @@ if (!thegamma) { var thegamma=[],tg="https://thegamma.net/lib/thegamma-{{ model.
 
 
   require(["monaco", "https://thegamma.net/lib/thegamma-{{ model.version }}/thegamma.js"], function (_, g) {
-    var services = "/";
+    var services = "/services/";
     var graphServices = "https://thegamma-graph-service.azurewebsites.net/";
     var provspec =
       { "libraries": g.providers.library("https://thegamma.net/lib/thegamma-{{ model.version }}/libraries.json"),
         "worldbank": g.providers.rest(services + "worldbank"),
-        "shared": g.providers.rest("/csv/providers/listing"),
-        "web": g.providers.rest("/csv/providers/data"),
-        "expenditure": g.providers.rest("/expenditure"),
+        "shared": g.providers.rest("/services/csv/providers/listing"),
+        "web": g.providers.rest("/services/csv/providers/data"),
+        "expenditure": g.providers.rest("/services/expenditure"),
         "drWho": g.providers.rest(graphServices + "drWho"),
         "olympics": g.providers.pivot(services + "pdata/olympics") };
     var config = "{{ model.config | jsEncode }}";

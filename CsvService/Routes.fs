@@ -76,7 +76,7 @@ let handler : HttpHandler =
         | Choice1Of2 id ->
             let result = Serializer.serializeMembers [
               Member("preview", None, Result.Nested("/null"), [], [])
-              Member("explore", None, Result.Provider("pivot", baseUrl + "/csv/providers/data/query/" + id), [], [])
+              Member("explore", None, Result.Provider("pivot", baseUrl + "/services/csv/providers/data/query/" + id), [], [])
             ]
             return! text result next ctx })
 
@@ -92,7 +92,7 @@ let handler : HttpHandler =
         | Choice1Of2 id ->
             let result = Serializer.serializeMembers [
               Member("preview", None, Result.Nested("/null"), [], [])
-              Member("explore", None, Result.Provider("pivot", baseUrl + "/csv/providers/data/query/" + id), [], [])
+              Member("explore", None, Result.Provider("pivot", baseUrl + "/services/csv/providers/data/query/" + id), [], [])
             ]
             return! text result next ctx })
 
@@ -119,7 +119,7 @@ let handler : HttpHandler =
               Member("preview", None, Result.Nested("/null"), [],
                 [ Schema("http://schema.org", "WebPage", ["url", JsonValue.String url ])
                   Schema("http://schema.thegamma.net", "CompletionItem", ["hidden", JsonValue.Boolean true ]) ])
-              Member("explore", None, Result.Provider("pivot", baseUrl + "/csv/providers/data/query/" + id), [], [])
+              Member("explore", None, Result.Provider("pivot", baseUrl + "/services/csv/providers/data/query/" + id), [], [])
             ]
             return! text result next ctx })
 
@@ -136,11 +136,11 @@ let handler : HttpHandler =
               Member("preview", None, Result.Nested("/null"), [],
                 [ Schema("http://schema.org", "WebPage", ["url", JsonValue.String url ])
                   Schema("http://schema.thegamma.net", "CompletionItem", ["hidden", JsonValue.Boolean true ]) ])
-              Member("explore", None, Result.Provider("pivot", baseUrl + "/csv/providers/data/query/" + id), [], [])
+              Member("explore", None, Result.Provider("pivot", baseUrl + "/services/csv/providers/data/query/" + id), [], [])
             ]
             return! text result next ctx })
 
-    routef "/providers/listing%s" (fun _ ->
+    routeStartsWith "/providers/listing" >=>
       fun next ctx -> task {
         let! files = Uploads.getRecords ()
         let visibleFiles = files |> Seq.filter (fun f -> not f.hidden)
@@ -167,7 +167,7 @@ let handler : HttpHandler =
               Serializer.serializeMembers [
                 for file in visibleFiles do
                   if file.date.Year = y && file.date.Month = m then
-                    yield Member(file.title, None, Result.Provider("pivot", baseUrl + "/csv/providers/csv/" + file.id), [], [])
+                    yield Member(file.title, None, Result.Provider("pivot", baseUrl + "/services/csv/providers/csv/" + file.id), [], [])
               ]
           elif localPath.Contains("/providers/listing/tag/") then
             let tagPart = localPath.Substring(localPath.IndexOf("/tag/") + 5).TrimEnd('/')
@@ -180,14 +180,16 @@ let handler : HttpHandler =
               Serializer.serializeMembers [
                 for file in visibleFiles do
                   if file.tags |> Seq.exists (fun t -> getTagId t = tagPart) then
-                    yield Member(file.title, None, Result.Provider("pivot", baseUrl + "/csv/providers/csv/" + file.id), [], [])
+                    yield Member(file.title, None, Result.Provider("pivot", baseUrl + "/services/csv/providers/csv/" + file.id), [], [])
               ]
           else
             Serializer.serializeMembers []
-        return! text result next ctx })
+        return! text result next ctx }
 
-    routef "/providers/csv/%s" (fun source ->
+    routeStartsWith "/providers/csv/" >=>
       fun next ctx -> task {
+        let localPath = ctx.Request.Path.Value
+        let source = localPath.Substring(localPath.IndexOf("/providers/csv/") + "/providers/csv/".Length)
         let! file = Uploads.fetchFile source
         match file with
         | None -> return! RequestErrors.BAD_REQUEST (sprintf "File with id '%s' does not exist!" source) next ctx
@@ -195,5 +197,5 @@ let handler : HttpHandler =
             let qs = ctx.Request.QueryString.Value
             let query = if System.String.IsNullOrEmpty(qs) then [] else qs.TrimStart('?').Split('&') |> Array.map (fun s -> s.Split('=').[0]) |> List.ofArray
             let result = Pivot.handleRequest meta data query
-            return! text result next ctx })
+            return! text result next ctx }
   ]

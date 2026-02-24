@@ -106,7 +106,7 @@ let snippetAgent = MailboxProcessor.Start(fun inbox ->
       try
         let! snips = readSnippets()
         return! loop snips
-      with e -> printfn "Gallery snippet agent has failed: %A" e })
+      with e -> eprintfn "GALLERY SNIPPET AGENT ERROR: %A" e })
 
 // --------------------------------------------------------------------------------------
 // CSV upload (direct calls to CsvService)

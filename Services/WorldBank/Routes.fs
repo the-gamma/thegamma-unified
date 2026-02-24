@@ -30,10 +30,14 @@ let makeSchemaExt kind name =
   { ``@context`` = "http://thegamma.net/worldbank"; ``@type`` = kind; name = name }
 
 let memberRoute s f : HttpHandler =
-  route s >=> ( f() |> Array.ofSeq |> toJson |> text )
+  route s >=> fun next ctx -> task {
+    let result = f() |> Array.ofSeq |> toJson
+    return! text result next ctx }
 
 let memberRoutef fmt f : HttpHandler =
-  routef fmt (f >> Array.ofSeq >> toJson >> text)
+  routef fmt (fun arg -> fun next ctx -> task {
+    let result = f arg |> Array.ofSeq |> toJson
+    return! text result next ctx })
 
 let (|Lookup|_|) k (dict:IDictionary<_,_>) =
   match dict.TryGetValue k with

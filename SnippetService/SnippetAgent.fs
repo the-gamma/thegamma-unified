@@ -64,8 +64,7 @@ let readSnippets source =
     let json = File.ReadAllText(filePath, Text.Encoding.UTF8)
     json, json |> fromJson<Snippet[]>
   else
-    let empty = toJson [||]
-    empty, [||]
+    failwithf "Snippets file not found: %s (storageRoot=%s)" filePath storageRoot
 
 let writeSnippets source (snippets:Snippet[]) =
   let dir = Path.Combine(storageRoot, "snippets", source)
@@ -122,4 +121,4 @@ let agent = MailboxProcessor.Start(fun inbox ->
   async {
     while true do
       try return! loop Map.empty
-      with e -> printfn "Snippet agent failed: %A" e })
+      with e -> eprintfn "SNIPPET AGENT ERROR: %A" e })

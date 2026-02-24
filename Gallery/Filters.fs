@@ -8,29 +8,30 @@ let cleanTitle (title:string) =
   let t = Regex.Replace(t, " +", "-")
   System.Web.HttpUtility.UrlEncode t
 
-// DotLiquid requires a .NET type with static methods for filters
+// DotLiquid requires a .NET type with static methods for filters.
+// Method names must match what the templates use (camelCase with CSharpNamingConvention).
 type FiltersType() =
-  static member IsHome (obj:System.Collections.IEnumerable) =
+  static member isHome (obj:System.Collections.IEnumerable) =
     (obj |> Seq.cast<obj> |> Seq.length) <= 8
 
-  static member JsEncode (s:string) =
+  static member jsEncode (s:string) =
     System.Web.HttpUtility.JavaScriptStringEncode s
 
-  static member HtmlEncode (s:string) =
+  static member htmlEncode (s:string) =
     System.Web.HttpUtility.HtmlEncode s
 
-  static member UrlEncode (url:string) =
+  static member urlEncode (url:string) =
     System.Web.HttpUtility.UrlEncode(url)
 
-  static member MailEncode (url:string) =
+  static member mailEncode (url:string) =
     System.Web.HttpUtility.UrlEncode(url).Replace("+", "%20")
 
-  static member CleanTitle (title:string) =
+  static member cleanTitle (title:string) =
     cleanTitle title
 
-  static member ModTwo (n:int) = n % 2
+  static member modTwo (n:int) = n % 2
 
-  static member NiceDate (dt:DateTime) =
+  static member niceDate (dt:DateTime) =
     let ts = DateTime.UtcNow - dt
     if ts.TotalSeconds < 0.0 then "just now"
     elif ts.TotalSeconds < 60.0 then sprintf "%d secs ago" (int ts.TotalSeconds)

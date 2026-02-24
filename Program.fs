@@ -9,20 +9,20 @@ open Microsoft.Extensions.Hosting
 open Giraffe
 
 let webApp = choose [
-    route "/" >=> text "TheGamma services are running..."
-
-    subRoute "/csv"          TheGamma.CsvService.Routes.handler
-    subRoute "/snippets"     TheGamma.SnippetService.Routes.handler
-    subRoute "/gallery"      TheGamma.Gallery.Routes.handler
-    subRoute "/expenditure"  TheGamma.Expenditure.Routes.handler
-    subRoute "/log"          TheGamma.Logging.Routes.handler
-    subRoute "/worldbank"    TheGamma.Services.WorldBank.Routes.handler
-    subRoute "/olympics"     TheGamma.Services.Olympics.Routes.handler
-    subRoute "/pdata"        TheGamma.Services.PivotData.Routes.handler
-    subRoute "/pivot"        TheGamma.Services.Pivot.Routes.handler
-    subRoute "/smlouvy"      TheGamma.Services.Smlouvy.Routes.handler
-    subRoute "/adventure"    TheGamma.Services.Adventure.Routes.handler
-    subRoute "/minimal"      TheGamma.Services.Minimal.Routes.handler
+    subRoute "/services" (choose [
+        subRoute "/csv"          TheGamma.CsvService.Routes.handler
+        subRoute "/snippets"     TheGamma.SnippetService.Routes.handler
+        subRoute "/expenditure"  TheGamma.Expenditure.Routes.handler
+        subRoute "/log"          TheGamma.Logging.Routes.handler
+        subRoute "/worldbank"    TheGamma.Services.WorldBank.Routes.handler
+        subRoute "/olympics"     TheGamma.Services.Olympics.Routes.handler
+        subRoute "/pdata"        TheGamma.Services.PivotData.Routes.handler
+        subRoute "/pivot"        TheGamma.Services.Pivot.Routes.handler
+        subRoute "/smlouvy"      TheGamma.Services.Smlouvy.Routes.handler
+        subRoute "/adventure"    TheGamma.Services.Adventure.Routes.handler
+        subRoute "/minimal"      TheGamma.Services.Minimal.Routes.handler
+    ])
+    TheGamma.Gallery.Routes.handler
 ]
 
 let configureApp (app: IApplicationBuilder) =
@@ -43,7 +43,7 @@ let configureServices (services: IServiceCollection) =
 [<EntryPoint>]
 let main args =
     let baseUrl = Environment.GetEnvironmentVariable("THEGAMMA_BASE_URL")
-    let baseUrl = if String.IsNullOrEmpty baseUrl then "http://localhost:8080" else baseUrl
+    let baseUrl = if String.IsNullOrEmpty baseUrl then "http://localhost:5000" else baseUrl
     let storageRoot = Environment.GetEnvironmentVariable("THEGAMMA_STORAGE_ROOT")
     let storageRoot = if String.IsNullOrEmpty storageRoot then Path.Combine(Directory.GetCurrentDirectory(), "storage") else storageRoot
     let recaptchaSecret = Environment.GetEnvironmentVariable("RECAPTCHA_SECRET")
@@ -59,7 +59,7 @@ let main args =
 
     // Initialize data-dependent services
     TheGamma.Services.Adventure.Routes.initData dataRoot
-    TheGamma.Expenditure.Routes.initData dataRoot
+    TheGamma.Expenditure.Routes.initData (Path.Combine(dataRoot, "expenditure"))
     TheGamma.Services.WorldBank.Routes.initData (Path.Combine(dataRoot, "worldbank"))
     TheGamma.Services.Olympics.Routes.initData dataRoot
     TheGamma.Services.PivotData.Routes.initAllData dataRoot
