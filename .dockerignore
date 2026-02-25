@@ -1,0 +1,9 @@
+.git
+bin
+obj
+.vs
+.vscode
+*.user
+data/20*.xml
+storage/logs
+storage/cache

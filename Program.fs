@@ -40,6 +40,13 @@ let configureServices (services: IServiceCollection) =
     services.AddCors() |> ignore
     services.AddGiraffe() |> ignore
 
+let timed label f =
+    printfn "[%s] %s..." (DateTime.Now.ToString("HH:mm:ss.fff")) label
+    let sw = Diagnostics.Stopwatch.StartNew()
+    let result = f ()
+    printfn "[%s] %s done (%.0fms)" (DateTime.Now.ToString("HH:mm:ss.fff")) label sw.Elapsed.TotalMilliseconds
+    result
+
 [<EntryPoint>]
 let main args =
     let baseUrl = Environment.GetEnvironmentVariable("THEGAMMA_BASE_URL")
@@ -52,22 +59,22 @@ let main args =
     let dataRoot = Path.Combine(Directory.GetCurrentDirectory(), "data")
 
     // Initialize storage services
-    TheGamma.CsvService.Storage.initStorage storageRoot
-    TheGamma.CsvService.Routes.initService baseUrl storageRoot
-    TheGamma.SnippetService.SnippetAgent.initStorage storageRoot
-    TheGamma.Logging.LogAgent.initStorage storageRoot
+    timed "Storage"   (fun () -> TheGamma.CsvService.Storage.initStorage storageRoot)
+    timed "CsvService" (fun () -> TheGamma.CsvService.Routes.initService baseUrl storageRoot)
+    timed "Snippets"  (fun () -> TheGamma.SnippetService.SnippetAgent.initStorage storageRoot)
+    timed "Logging"   (fun () -> TheGamma.Logging.LogAgent.initStorage storageRoot)
 
     // Initialize data-dependent services
-    TheGamma.Services.Adventure.Routes.initData dataRoot
-    TheGamma.Expenditure.Routes.initData (Path.Combine(dataRoot, "expenditure"))
-    TheGamma.Services.WorldBank.Routes.initData (Path.Combine(dataRoot, "worldbank"))
-    TheGamma.Services.Olympics.Routes.initData dataRoot
-    TheGamma.Services.PivotData.Routes.initAllData dataRoot
-    TheGamma.Services.Smlouvy.Routes.initData dataRoot
+    timed "Adventure"  (fun () -> TheGamma.Services.Adventure.Routes.initData dataRoot)
+    timed "Expenditure" (fun () -> TheGamma.Expenditure.Routes.initData (Path.Combine(dataRoot, "expenditure")))
+    timed "WorldBank"  (fun () -> TheGamma.Services.WorldBank.Routes.initData (Path.Combine(dataRoot, "worldbank")))
+    timed "Olympics"   (fun () -> TheGamma.Services.Olympics.Routes.initData dataRoot)
+    timed "PivotData"  (fun () -> TheGamma.Services.PivotData.Routes.initAllData dataRoot)
+    timed "Smlouvy"    (fun () -> TheGamma.Services.Smlouvy.Routes.initData dataRoot)
 
     // Initialize gallery
     let templateDir = Path.Combine(Directory.GetCurrentDirectory(), "templates")
-    TheGamma.Gallery.Routes.initGallery templateDir baseUrl recaptchaSecret
+    timed "Gallery"    (fun () -> TheGamma.Gallery.Routes.initGallery templateDir baseUrl recaptchaSecret)
 
     Host.CreateDefaultBuilder(args)
         .ConfigureWebHostDefaults(fun webHost ->
