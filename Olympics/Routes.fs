@@ -93,6 +93,7 @@ let docs =
 
 let mutable loadedArticles : Article[] = [||]
 let mutable loadedCategories : Category[] = [||]
+let mutable servicesUrl = "https://services.thegamma.net/services"
 
 let split (pars:MarkdownParagraph list) =
   let rec before head acc = function
@@ -122,16 +123,17 @@ let readArticle i (category, id) (docsDir:string) =
     compiled =
       compiled
         .Replace("http://thegamma-services.azurewebsites.net/pivot",
-                 "https://services.thegamma.net/services/pivot")
+                 servicesUrl + "/pivot")
         .Replace("http://thegamma-services.azurewebsites.net/olympics",
-                 "https://services.thegamma.net/services/olympics")
+                 servicesUrl + "/olympics")
         .Replace("html.img(\"/img/", "html.img(\"/rio2016/img/")
     heading = head
     before = format beforePars
     after = format afterPars }
 
-let initData (docsDir:string) (templDir:string) =
+let initData (docsDir:string) (templDir:string) (baseUrl:string) =
   olympicsTemplateDir <- templDir
+  servicesUrl <- baseUrl + "/services"
   // Replace Gallery's template file system with a combined one that also serves Olympics templates.
   // Gallery templates extend "default.html"; Olympics templates extend "page.html" — no filename conflicts.
   Template.FileSystem <- CombinedTemplateFileSystem([TheGamma.Gallery.Routes.templateDir; templDir])

@@ -80,7 +80,7 @@ let main args =
     // Initialize Olympics web
     let olympicsDocsDir = Path.Combine(Directory.GetCurrentDirectory(), "olympics-docs")
     let olympicsTemplDir = Path.Combine(Directory.GetCurrentDirectory(), "olympics-templates")
-    timed "OlympicsWeb" (fun () -> TheGamma.Olympics.Routes.initData olympicsDocsDir olympicsTemplDir)
+    timed "OlympicsWeb" (fun () -> TheGamma.Olympics.Routes.initData olympicsDocsDir olympicsTemplDir baseUrl)
 
     Host.CreateDefaultBuilder(args)
         .ConfigureWebHostDefaults(fun webHost ->
