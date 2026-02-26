@@ -77,7 +77,7 @@
 	    }
 	  }
 	
-	  var services = exports.services = (0, _extensions.isLocalHost)() ? "http://127.0.0.1:10042/" : "http://thegamma-services.azurewebsites.net/";
+	  var services = exports.services = (0, _extensions.isLocalHost)() ? "http://localhost:5000/services/" : "https://services.thegamma.net/services/";
 	
 	  var ProvidedTypes = exports.ProvidedTypes = function ProvidedTypes(lookupNamed, globals) {
 	    _classCallCheck(this, ProvidedTypes);
