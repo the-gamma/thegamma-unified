@@ -20,6 +20,9 @@ type FiltersType() =
   static member htmlEncode (s:string) =
     System.Web.HttpUtility.HtmlEncode s
 
+  static member idEncode (id:string) =
+    id.Replace('/', '-')
+
   static member urlEncode (url:string) =
     System.Web.HttpUtility.UrlEncode(url)
 

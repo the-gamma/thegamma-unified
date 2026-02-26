@@ -9,6 +9,7 @@
     <PackageReference Include="DotLiquid" Version="2.*" />
     <PackageReference Include="FSharp.Data" Version="6.*" />
     <PackageReference Include="Newtonsoft.Json" Version="13.*" />
+    <PackageReference Include="FSharp.Formatting" Version="21.*" />
   </ItemGroup>
 
   <ItemGroup>
@@ -37,6 +38,7 @@
     <Compile Include="Gallery/Filters.fs" />
     <Compile Include="Gallery/GalleryLogic.fs" />
     <Compile Include="Gallery/Routes.fs" />
+    <Compile Include="Olympics/Routes.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
 

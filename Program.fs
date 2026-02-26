@@ -22,6 +22,7 @@ let webApp = choose [
         subRoute "/adventure"    TheGamma.Services.Adventure.Routes.handler
         subRoute "/minimal"      TheGamma.Services.Minimal.Routes.handler
     ])
+    subRoute "/rio2016"   TheGamma.Olympics.Routes.handler
     TheGamma.Gallery.Routes.handler
 ]
 
@@ -75,6 +76,11 @@ let main args =
     // Initialize gallery
     let templateDir = Path.Combine(Directory.GetCurrentDirectory(), "templates")
     timed "Gallery"    (fun () -> TheGamma.Gallery.Routes.initGallery templateDir baseUrl recaptchaSecret)
+
+    // Initialize Olympics web
+    let olympicsDocsDir = Path.Combine(Directory.GetCurrentDirectory(), "olympics-docs")
+    let olympicsTemplDir = Path.Combine(Directory.GetCurrentDirectory(), "olympics-templates")
+    timed "OlympicsWeb" (fun () -> TheGamma.Olympics.Routes.initData olympicsDocsDir olympicsTemplDir)
 
     Host.CreateDefaultBuilder(args)
         .ConfigureWebHostDefaults(fun webHost ->

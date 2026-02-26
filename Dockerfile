@@ -14,6 +14,8 @@ COPY --from=build /app .
 # Static data baked into image (smlouvy XMLs excluded via .dockerignore)
 COPY data/ data/
 COPY templates/ templates/
+COPY olympics-docs/ olympics-docs/
+COPY olympics-templates/ olympics-templates/
 
 # Seed data for volume initialisation (logs/cache excluded via .dockerignore)
 COPY storage/uploads/      /seed/uploads/
