@@ -208,7 +208,7 @@ let loadShared (json:string) (idOpt:int option) =
 
 let handler : HttpHandler =
   choose [
-    GET >=> route "/" >=> fun next ctx -> task {
+    GET >=> choose [ route "/"; route "" ] >=> fun next ctx -> task {
       return! dotLiquidPage "home.html" (box (loadHome ())) next ctx }
 
     GET >=> routef "/shared/%i/%s" (fun (id, _) ->
