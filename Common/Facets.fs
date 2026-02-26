@@ -104,7 +104,7 @@ let createFacetApp records fields facets : HttpHandler =
     let localPath = ctx.Request.Path.Value
     let selected = localPath.Split([|'/'|], StringSplitOptions.RemoveEmptyEntries) |> List.ofSeq
     match selected with
-    | ["data"] ->
+    | _ when List.tryLast selected = Some "data" ->
         use reader = new StreamReader(ctx.Request.Body)
         let! data = reader.ReadToEndAsync()
         let constraints =
