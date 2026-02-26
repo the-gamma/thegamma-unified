@@ -5,6 +5,8 @@ obj/
 # Data (downloaded from Azure, not committed)
 data/
 storage/
+# But do track small static assets in wwwroot
+!wwwroot/data/
 
 # IDE
 .vs/
