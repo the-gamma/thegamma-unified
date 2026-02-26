@@ -8,7 +8,16 @@ open Microsoft.Extensions.DependencyInjection
 open Microsoft.Extensions.Hosting
 open Giraffe
 
+let rio2016Redirect : HttpHandler =
+    fun next ctx ->
+        if ctx.Request.Host.Host = "rio2016.thegamma.net" &&
+           not (ctx.Request.Path.Value.StartsWith("/rio2016")) then
+            redirectTo false ("/rio2016" + ctx.Request.Path.Value) next ctx
+        else
+            next ctx
+
 let webApp = choose [
+    rio2016Redirect
     subRoute "/services" (choose [
         subRoute "/csv"          TheGamma.CsvService.Routes.handler
         subRoute "/snippets"     TheGamma.SnippetService.Routes.handler
