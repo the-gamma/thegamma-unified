@@ -42,7 +42,7 @@ let uploadCsv container (id:string) data =
   ensureDir dir
   let filePath = Path.Combine(dir, id.Replace('/', Path.DirectorySeparatorChar))
   ensureDir (Path.GetDirectoryName filePath)
-  File.WriteAllText(filePath, data, Text.Encoding.UTF8)
+  File.WriteAllText(filePath, (data:string), Text.Encoding.UTF8)
   id
 
 let downloadCsv container (id:string) =

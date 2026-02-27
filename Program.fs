@@ -14,7 +14,7 @@ let rio2016Redirect : HttpHandler =
            not (ctx.Request.Path.Value.StartsWith("/rio2016")) then
             redirectTo false ("/rio2016" + ctx.Request.Path.Value) next ctx
         else
-            next ctx
+            skipPipeline
 
 let webApp = choose [
     rio2016Redirect
