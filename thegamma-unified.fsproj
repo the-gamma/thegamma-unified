@@ -13,33 +13,33 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Include="Common/Serializer.fs" />
-    <Compile Include="Common/JsonHelpers.fs" />
-    <Compile Include="Common/Facets.fs" />
-    <Compile Include="Services/Minimal/Routes.fs" />
-    <Compile Include="Services/Adventure/Routes.fs" />
-    <Compile Include="Expenditure/LoadData.fs" />
-    <Compile Include="Expenditure/Routes.fs" />
-    <Compile Include="Services/WorldBank/Domain.fs" />
-    <Compile Include="Services/WorldBank/Routes.fs" />
-    <Compile Include="Services/Olympics/Routes.fs" />
-    <Compile Include="Services/PivotData/Routes.fs" />
-    <Compile Include="Services/Smlouvy/Routes.fs" />
-    <Compile Include="CsvService/Pivot.fs" />
-    <Compile Include="CsvService/Storage.fs" />
-    <Compile Include="CsvService/WebScrape.fs" />
-    <Compile Include="CsvService/Listing.fs" />
-    <Compile Include="CsvService/Routes.fs" />
-    <Compile Include="SnippetService/SnippetAgent.fs" />
-    <Compile Include="SnippetService/Routes.fs" />
-    <Compile Include="Logging/LogAgent.fs" />
-    <Compile Include="Logging/Routes.fs" />
-    <Compile Include="Services/Pivot/Routes.fs" />
-    <Compile Include="Gallery/Filters.fs" />
-    <Compile Include="Gallery/GalleryLogic.fs" />
-    <Compile Include="Gallery/Routes.fs" />
-    <Compile Include="Olympics/Routes.fs" />
-    <Compile Include="Program.fs" />
+    <Compile Include="src/Common/Serializer.fs" />
+    <Compile Include="src/Common/JsonHelpers.fs" />
+    <Compile Include="src/Common/Facets.fs" />
+    <Compile Include="src/Services/Minimal/Routes.fs" />
+    <Compile Include="src/Services/Adventure/Routes.fs" />
+    <Compile Include="src/Expenditure/LoadData.fs" />
+    <Compile Include="src/Expenditure/Routes.fs" />
+    <Compile Include="src/Services/WorldBank/Domain.fs" />
+    <Compile Include="src/Services/WorldBank/Routes.fs" />
+    <Compile Include="src/Services/Olympics/Routes.fs" />
+    <Compile Include="src/Services/PivotData/Routes.fs" />
+    <Compile Include="src/Services/Smlouvy/Routes.fs" />
+    <Compile Include="src/CsvService/Pivot.fs" />
+    <Compile Include="src/CsvService/Storage.fs" />
+    <Compile Include="src/CsvService/WebScrape.fs" />
+    <Compile Include="src/CsvService/Listing.fs" />
+    <Compile Include="src/CsvService/Routes.fs" />
+    <Compile Include="src/SnippetService/SnippetAgent.fs" />
+    <Compile Include="src/SnippetService/Routes.fs" />
+    <Compile Include="src/Logging/LogAgent.fs" />
+    <Compile Include="src/Logging/Routes.fs" />
+    <Compile Include="src/Services/Pivot/Routes.fs" />
+    <Compile Include="src/Gallery/Filters.fs" />
+    <Compile Include="src/Gallery/GalleryLogic.fs" />
+    <Compile Include="src/Gallery/Routes.fs" />
+    <Compile Include="src/Olympics/Routes.fs" />
+    <Compile Include="src/Program.fs" />
   </ItemGroup>
 
 </Project>

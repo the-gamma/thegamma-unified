@@ -27,8 +27,8 @@ type Record =
     Prijemci : string
     PrijemciIco : string }
 
-type Index = XmlProvider<const(__SOURCE_DIRECTORY__ + "/../../data/smlouvy-index.xml")>
-type Dump = XmlProvider<const(__SOURCE_DIRECTORY__ + "/../../data/smlouvy-dump.xml")>
+type Index = XmlProvider<const(__SOURCE_DIRECTORY__ + "/../../../data/smlouvy-index.xml")>
+type Dump = XmlProvider<const(__SOURCE_DIRECTORY__ + "/../../../data/smlouvy-dump.xml")>
 
 let updateCache() = async {
   if not (Directory.Exists cache) then Directory.CreateDirectory cache |> ignore

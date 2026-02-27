@@ -309,13 +309,13 @@ let transformData (objs:seq<(string * Value)[]>) = function
 // ----------------------------------------------------------------------------
 
 module Olympics =
-  let [<Literal>] Root = __SOURCE_DIRECTORY__ + "/../../data/medals-expanded.csv"
+  let [<Literal>] Root = __SOURCE_DIRECTORY__ + "/../../../data/medals-expanded.csv"
   type Medals = CsvProvider<Root, Schema="Gold=int, Silver=int, Bronze=int", CacheRows=false>
 
   let mutable dataRoot = ""
   let initData dir = dataRoot <- dir
 
-  type Codes = FSharp.Data.HtmlProvider<const(__SOURCE_DIRECTORY__ + "/../../data/countrycodes.html")>
+  type Codes = FSharp.Data.HtmlProvider<const(__SOURCE_DIRECTORY__ + "/../../../data/countrycodes.html")>
   let countries = lazy (
     [ yield "KOS", "Kosovo"
       yield "SRB", "Serbia"
@@ -346,8 +346,8 @@ module Smlouvy =
   let initData dir = cache <- dir
   let (</>) a b = Path.Combine(a, b)
 
-  type Index = XmlProvider<const(__SOURCE_DIRECTORY__ + "/../../data/smlouvy-index.xml")>
-  type Dump = XmlProvider<const(__SOURCE_DIRECTORY__ + "/../../data/smlouvy-dump.xml")>
+  type Index = XmlProvider<const(__SOURCE_DIRECTORY__ + "/../../../data/smlouvy-index.xml")>
+  type Dump = XmlProvider<const(__SOURCE_DIRECTORY__ + "/../../../data/smlouvy-dump.xml")>
 
   let updateCache() = async {
     if not (Directory.Exists cache) then Directory.CreateDirectory cache |> ignore

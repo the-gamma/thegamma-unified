@@ -26,10 +26,10 @@ type Dictionaries =
         Data : DataPoint list
     }
 
-let [<Literal>] yearsDictCsv = __SOURCE_DIRECTORY__ + "/../data/expenditure/headers/years.csv"
-let [<Literal>] servicesDictCsv = __SOURCE_DIRECTORY__ + "/../data/expenditure/headers/subservices.csv"
-let [<Literal>] Y20112015Csv = __SOURCE_DIRECTORY__ + "/../data/expenditure/headers/Table5-2.csv"
-let [<Literal>] Y19992015Csv = __SOURCE_DIRECTORY__ + "/../data/expenditure/headers/Table4-2.csv"
+let [<Literal>] yearsDictCsv = __SOURCE_DIRECTORY__ + "/../../data/expenditure/headers/years.csv"
+let [<Literal>] servicesDictCsv = __SOURCE_DIRECTORY__ + "/../../data/expenditure/headers/subservices.csv"
+let [<Literal>] Y20112015Csv = __SOURCE_DIRECTORY__ + "/../../data/expenditure/headers/Table5-2.csv"
+let [<Literal>] Y19992015Csv = __SOURCE_DIRECTORY__ + "/../../data/expenditure/headers/Table4-2.csv"
 
 type ServiceDictProvider = CsvProvider<servicesDictCsv, Schema = "string,string,string,string">
 type YearDictProvider = CsvProvider<yearsDictCsv, Schema = "string,string">

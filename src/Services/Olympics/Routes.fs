@@ -10,7 +10,7 @@ open Microsoft.AspNetCore.Http
 open TheGamma.Common.JsonHelpers
 open TheGamma.Common.Facets
 
-let [<Literal>] Root = __SOURCE_DIRECTORY__ + "/../../data/medals-expanded.csv"
+let [<Literal>] Root = __SOURCE_DIRECTORY__ + "/../../../data/medals-expanded.csv"
 type Medals = CsvProvider<Root, Schema="Gold=int, Silver=int, Bronze=int">
 
 let mutable dataRoot = ""
@@ -18,7 +18,7 @@ let mutable dataRoot = ""
 let initData dir =
   dataRoot <- dir
 
-type Codes = FSharp.Data.HtmlProvider<const(__SOURCE_DIRECTORY__ + "/../../data/countrycodes.html")>
+type Codes = FSharp.Data.HtmlProvider<const(__SOURCE_DIRECTORY__ + "/../../../data/countrycodes.html")>
 
 let medals = lazy Medals.Load(Path.Combine(dataRoot, "medals-expanded.csv"))
 
