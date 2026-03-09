@@ -28,6 +28,7 @@ let webApp = choose [
         subRoute "/pdata"        TheGamma.Services.PivotData.Routes.handler
         subRoute "/pivot"        TheGamma.Services.Pivot.Routes.handler
         subRoute "/smlouvy"      TheGamma.Services.Smlouvy.Routes.handler
+        subRoute "/drwho"        TheGamma.Services.DrWho.Routes.handler
         subRoute "/adventure"    TheGamma.Services.Adventure.Routes.handler
         subRoute "/minimal"      TheGamma.Services.Minimal.Routes.handler
     ])
@@ -79,6 +80,7 @@ let main args =
     timed "Expenditure" (fun () -> TheGamma.Expenditure.Routes.initData (Path.Combine(dataRoot, "expenditure")))
     timed "WorldBank"  (fun () -> TheGamma.Services.WorldBank.Routes.initData (Path.Combine(dataRoot, "worldbank")))
     timed "Olympics"   (fun () -> TheGamma.Services.Olympics.Routes.initData dataRoot)
+    timed "DrWho"      (fun () -> TheGamma.Services.DrWho.Routes.initData dataRoot baseUrl)
     timed "PivotData"  (fun () -> TheGamma.Services.PivotData.Routes.initAllData dataRoot)
     timed "Smlouvy"    (fun () -> TheGamma.Services.Smlouvy.Routes.initData dataRoot)
 

@@ -93,7 +93,6 @@
   var editor;
   require(["monaco", "https://thegamma.net/lib/thegamma-{{ model.CurrentVersion }}/thegamma.js"], function (_, g) {
     var services = "/services/";
-    var graphServices = "https://thegamma-graph-service.azurewebsites.net/";
     var providers =
       g.providers.createProviders({
         "libraries": g.providers.library("https://thegamma.net/lib/thegamma-{{ model.CurrentVersion }}/libraries.json"),
@@ -104,7 +103,8 @@
         "shared": g.providers.rest("/services/csv/providers/listing"),
         "web": g.providers.rest("/services/csv/providers/data"),
         "expenditure": g.providers.rest("/services/expenditure"),
-        "drWho": g.providers.rest(graphServices + "drWho"),
+        "drWho": g.providers.rest(services + "drwho"),
+        "drWhoOld": g.providers.rest("http://localhost:8000/drWho"),
         "olympics": g.providers.pivot(services + "pdata/olympics") });
 
     // Create context which is used to create editor & run code

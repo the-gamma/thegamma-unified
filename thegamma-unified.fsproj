@@ -34,6 +34,7 @@
     <Compile Include="src/SnippetService/Routes.fs" />
     <Compile Include="src/Logging/LogAgent.fs" />
     <Compile Include="src/Logging/Routes.fs" />
+    <Compile Include="src/Services/DrWho/Routes.fs" />
     <Compile Include="src/Services/Pivot/Routes.fs" />
     <Compile Include="src/Gallery/Filters.fs" />
     <Compile Include="src/Gallery/GalleryLogic.fs" />
