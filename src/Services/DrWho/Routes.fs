@@ -39,6 +39,21 @@ let mutable neighborsByNodeId : Map<int, (string * int)[]> = Map.empty
 let mutable orderedLabels : string[] = [||]
 let mutable serviceBaseUrl : string = "http://localhost:5000"
 
+// ----------------------------------------------------------------------------
+// Graph query helpers
+// ----------------------------------------------------------------------------
+
+let nodeName (n:Node) =
+  let key = n.Label.ToLower()
+  let byKey = n.Properties |> Map.tryFind key
+  let byTitle = n.Properties |> Map.tryFind "title"
+  // Prefer title over a purely numeric label-key value (e.g. Episode.episode = "1")
+  match byKey, byTitle with
+  | Some v, Some t when v |> Seq.forall Char.IsDigit -> t
+  | Some v, _ -> v
+  | None, Some t -> t
+  | None, None -> string n.Id
+
 let initData (dataRoot:string) (baseUrl:string) =
   serviceBaseUrl <- baseUrl
   let lines = File.ReadAllLines(Path.Combine(dataRoot, "drwho", "drwho.cypher"))
@@ -72,10 +87,8 @@ let initData (dataRoot:string) (baseUrl:string) =
 
   nodeById     <- nodes |> Array.map (fun n -> n.Id, n) |> Map.ofArray
   nodeByName   <- nodes |> Array.choose (fun n ->
-    let key = n.Label.ToLower()
-    n.Properties |> Map.tryFind key
-    |> Option.orElse (n.Properties |> Map.tryFind "title")
-    |> Option.map (fun nm -> nm, n)) |> Map.ofArray
+    let nm = nodeName n
+    if nm = string n.Id then None else Some (nm, n)) |> Map.ofArray
   nodesByLabel <- nodes |> Array.groupBy (fun n -> n.Label) |> Map.ofArray
 
   // Build undirected neighbor list: directed edge A→B adds (rel,B) to A and (rel,A) to B
@@ -99,17 +112,6 @@ let initData (dataRoot:string) (baseUrl:string) =
 // ----------------------------------------------------------------------------
 // Graph query helpers
 // ----------------------------------------------------------------------------
-
-let nodeName (n:Node) =
-  let key = n.Label.ToLower()
-  let byKey = n.Properties |> Map.tryFind key
-  let byTitle = n.Properties |> Map.tryFind "title"
-  // Prefer title over a purely numeric label-key value (e.g. Episode.episode = "1")
-  match byKey, byTitle with
-  | Some v, Some t when v |> Seq.forall Char.IsDigit -> t
-  | Some v, _ -> v
-  | None, Some t -> t
-  | None, None -> string n.Id
 
 // Build the property schema (field name + type) for a set of nodes.
 // Order: label-key prop, synthetic name, synthetic label, remaining string props sorted, float props sorted.
@@ -159,6 +161,7 @@ let pathsForTrace (body:string) : Node[][] =
             neighborsByNodeId |> Map.tryFind lastNode.Id |> Option.defaultValue [||]
             |> Array.filter (fun (r, _) -> r = rel)
             |> Array.map (fun (_, toId) -> nodeById.[toId])
+            |> Array.distinctBy (fun n -> n.Id)
           let filtered =
             match sel with
             | "[any]" -> neighbors

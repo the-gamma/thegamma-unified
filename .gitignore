@@ -4,6 +4,7 @@ obj/
 
 # Data (downloaded from Azure, not committed)
 data/
+!data/highlighted.txt
 storage/
 # But do track small static assets in wwwroot
 !wwwroot/data/

@@ -18,6 +18,7 @@ open TheGamma.SnippetService.SnippetAgent
 
 let mutable templateDir = ""
 let mutable baseUrl = ""
+let mutable highlightedIds : int[] = [||]
 
 type TemplateFileSystem(root:string) =
   interface DotLiquid.FileSystems.IFileSystem with
@@ -57,6 +58,14 @@ let initGallery templDir bUrl recaptcha =
   Template.FileSystem <- TemplateFileSystem(templDir)
   Template.RegisterFilter(typeof<Filters.FiltersType>)
   updateCurrentVersion()
+  let highlightedPath = Path.Combine(templDir, "..", "data", "highlighted.txt")
+  if File.Exists(highlightedPath) then
+    highlightedIds <-
+      File.ReadAllLines(highlightedPath)
+      |> Array.choose (fun s ->
+          match Int32.TryParse(s.Trim()) with
+          | true, n -> Some n
+          | _ -> None)
 
 let renderTemplate (name:string) (model:obj) =
   if not (isNull model) then registerTypeTree (model.GetType())
@@ -242,11 +251,14 @@ let handler : HttpHandler =
   choose [
     GET >=> route "/" >=> fun next ctx -> task {
       let! snips = snippetAgent.PostAndAsyncReply(fun ch -> ListSnippets(8, ch)) |> Async.StartAsTask
-      return! dotLiquidPage "home.html" (box snips) next ctx }
+      let! highlighted = snippetAgent.PostAndAsyncReply(fun ch -> GetHighlighted(highlightedIds, ch)) |> Async.StartAsTask
+      let model = { highlighted = highlighted; recent = snips; isHome = true }
+      return! dotLiquidPage "home.html" (box model) next ctx }
 
     GET >=> route "/all" >=> fun next ctx -> task {
       let! snips = snippetAgent.PostAndAsyncReply(fun ch -> ListSnippets(Int32.MaxValue, ch)) |> Async.StartAsTask
-      return! dotLiquidPage "home.html" (box snips) next ctx }
+      let model = { highlighted = [||]; recent = snips; isHome = false }
+      return! dotLiquidPage "home.html" (box model) next ctx }
 
     POST >=> route "/create" >=> createPageHandler
     GET >=> route "/create" >=> createPageHandler

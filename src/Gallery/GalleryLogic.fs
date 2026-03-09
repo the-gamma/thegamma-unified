@@ -46,6 +46,11 @@ type GallerySnippet =
     config : string
     hidden : bool }
 
+type HomeModel =
+  { highlighted : GallerySnippet[]
+    recent : GallerySnippet[]
+    isHome : bool }
+
 // --------------------------------------------------------------------------------------
 // Snippet operations (direct calls to SnippetAgent)
 // --------------------------------------------------------------------------------------
@@ -85,6 +90,7 @@ let postSnippet (snip:NewSnippet) = async {
 type SnippetMessage =
   | GetSnippet of int * AsyncReplyChannel<GallerySnippet option>
   | ListSnippets of int * AsyncReplyChannel<GallerySnippet[]>
+  | GetHighlighted of int[] * AsyncReplyChannel<GallerySnippet[]>
   | InsertSnippet of NewSnippet * AsyncReplyChannel<int>
 
 let snippetAgent = MailboxProcessor.Start(fun inbox ->
@@ -96,6 +102,10 @@ let snippetAgent = MailboxProcessor.Start(fun inbox ->
         return! loop snips
     | ListSnippets(max, ch) ->
         ch.Reply(snips |> Array.truncate max)
+        return! loop snips
+    | GetHighlighted(ids, ch) ->
+        let byId = snips |> Array.map (fun s -> s.id, s) |> Map.ofArray
+        ch.Reply(ids |> Array.choose (fun id -> byId |> Map.tryFind id))
         return! loop snips
     | InsertSnippet(snip, ch) ->
         let! snip = postSnippet snip

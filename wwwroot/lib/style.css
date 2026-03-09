@@ -58,6 +58,69 @@ header a, header a:hover {
   text-decoration:none !important;
 }
 
+section.highlighted {
+  position: relative;
+  background: url(https://thegamma.net/img/bg.png) #000;
+  padding: 20px 0px 10px 0px;
+}
+section.highlighted::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
+  pointer-events: none;
+}
+section.highlighted .container {
+  position: relative;
+}
+section.highlighted h2 {
+  font-family: 'Kreon', serif !important;
+  font-weight: 700;
+  color: #fff !important;
+  margin-top: 10px;
+  margin-bottom: 15px;
+}
+section.highlighted h3 {
+  font-family: 'Kreon', serif !important;
+  font-weight: 400;
+  margin-top: 0px;
+  line-height: 1.4;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+section.highlighted h3 a, section.highlighted h3 a:visited {
+  text-decoration: none !important;
+}
+section.highlighted h3 a span {
+  background: #F4C300;
+  color: #000 !important;
+  font-weight: 300;
+  padding: 2px 10px;
+}
+section.highlighted h3 a:hover span {
+  background: #EFD47C;
+}
+section.highlighted p {
+  color: #b0b0b0;
+  font-size: 14pt;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 300;
+  line-height: 19pt;
+}
+section.highlighted p strong {
+  color: #d8d8d8;
+  font-weight: 500;
+}
+section.highlighted ul li, section.highlighted ul {
+  list-style-type: none;
+  padding: 0px;
+  margin: 0px;
+}
+section.highlighted ul li {
+  padding: 10px 10px 10px 0px;
+  margin-bottom: 10px;
+}
 
 header.create {
   padding:30px 0px 40px 0px;
